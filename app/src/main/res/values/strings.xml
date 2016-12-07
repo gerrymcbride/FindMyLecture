@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FindMyLecture</string>
+    <string name="first_button">Get Started</string>
+    <string name="exit_button">Quit</string>
+</resources>
