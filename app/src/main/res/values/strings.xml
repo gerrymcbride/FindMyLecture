@@ -2,4 +2,6 @@
     <string name="app_name">FindMyLecture</string>
     <string name="first_button">Get Started</string>
     <string name="exit_button">Quit</string>
+    <string name="enter_location"> Enter Location </string>
+    <string name="enter_destination"> Enter Destination </string>
 </resources>

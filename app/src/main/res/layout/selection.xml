@@ -13,10 +13,18 @@
         android:layout_gravity="left|top" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="150px"
+    android:layout_width="match_parent"
+    android:layout_height="150px"
+    android:hint="@string/enter_location"
 
     />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="150px"
+        android:hint="@string/enter_destination"
+
+        />
 
 
 
