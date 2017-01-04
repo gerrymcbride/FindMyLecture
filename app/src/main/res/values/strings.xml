@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">FindMyLecture</string>
-    <string name="first_button">Get Started</string>
-    <string name="exit_button">Quit</string>
-    <string name="enter_location"> Enter Location </string>
-    <string name="enter_destination"> Enter Destination </string>
+    <string name="submit_button">Get Me There!</string>
+    <string name="return_button">Return</string>
+    <string name="error_oops">Oops!</string>
+    <string name="error_explanation">Something Went Wrong! </string>
+    <string name="error_return">Return</string>
+    <string name="current_location"> Use Current Location </string>
+    <string name="custom_location"> Use Custom Location </string>
+    <string name="enterlocation">Enter Location</string>
+    <string name="enterdestination">Enter Destination</string>
 </resources>
