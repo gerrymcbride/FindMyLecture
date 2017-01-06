@@ -36,9 +36,9 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
     GoogleMap mGoogleMap;
     Button go;
-    String[] places ={"John Hume Building","Eolas Building","Iontas","SQL","JDBC","Web services"};
-    AutoCompleteTextView text;
-    MultiAutoCompleteTextView text1;
+    AutoCompleteTextView et;
+    AutoCompleteTextView tT;
+
 
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -46,8 +46,26 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
         if(googleServicesAvailable()){
 
+
             Toast.makeText(this, "Perfect!", Toast.LENGTH_LONG).show();
             setContentView(R.layout.mapresult);
+
+            String[] places ={"John Hume Building","Eolas Building","Iontas","SQL","JDBC","Web services"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String> (this,android.R.layout.simple_list_item_1, places);
+            et = (AutoCompleteTextView)findViewById(R.id.eT);
+            tT = (AutoCompleteTextView)findViewById(R.id.TT);
+
+
+            et.setAdapter(adapter);
+            et.setThreshold(1);
+
+
+            tT.setAdapter(adapter);
+            tT.setThreshold(1);
+
+
+
+
             initMap();
 
             //text=(AutoCompleteTextView)findViewById(R.id.autoCompleteTextView1);
@@ -120,19 +138,9 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
     }
 
     public void call()throws IOException{
-        MultiAutoCompleteTextView et = (MultiAutoCompleteTextView)findViewById(R.id.eT);
-        MultiAutoCompleteTextView TT = (MultiAutoCompleteTextView)findViewById(R.id.TT);
-
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, places);
-        et.setAdapter(adapter);
-        et.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-
-        TT.setAdapter(adapter);
-        TT.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-
 
         String location = et.getText().toString();
-        String location2 = TT.getText().toString();
+        String location2 = tT.getText().toString();
 
         Geocoder gc = new Geocoder(this);
         List<Address> list = gc.getFromLocationName(location,1);
