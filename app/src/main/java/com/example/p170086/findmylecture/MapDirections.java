@@ -52,7 +52,7 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Perfect!", Toast.LENGTH_LONG).show();
             setContentView(R.layout.mapresult);
 
-            String[] places ={"John Hume Building","Eolas Building","Iontas","SQL","JDBC","Web services"};
+            String[] places ={"John Hume Building","Eolas Building","Iontas Building","Student Union","Arts Block","John Paul II Library", "Science Building", "Callan Building", "Froebel College of Education"};
             ArrayAdapter<String> adapter = new ArrayAdapter<String> (this,android.R.layout.simple_list_item_1, places);
             et = (AutoCompleteTextView)findViewById(R.id.eT);
             tT = (AutoCompleteTextView)findViewById(R.id.TT);
@@ -141,24 +141,24 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
     public void call()throws IOException{
 
-        String location = et.getText().toString();
-        String location2 = tT.getText().toString();
+        final String location = et.getText().toString();
+        final String location2 = tT.getText().toString();
 
         Geocoder gc = new Geocoder(this);
-        List<Address> list = gc.getFromLocationName(location,1);
-        Address address = list.get(0);
-        String locality = address.getLocality();
+      //  List<Address> list = gc.getFromLocationName(location,1);
+       // Address address = list.get(0);
+        // String locality = address.getLocality();
 
-        Toast.makeText(this, locality, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, locality, Toast.LENGTH_LONG).show();
 
-        double lat =  address.getLatitude();
-        double lon = address.getLongitude();
+        double lat =  0;
+        double lon = 0;
 
-        goToLocationZoom(lat, lon, 15);
 
-        MarkerOptions mk = new MarkerOptions()
-                .title(locality)
-                .position(new LatLng(lat, lon));
+
+
+        goToLocationZoom(lat, lon, 17);
+
 
 
 
@@ -186,14 +186,18 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
 
                 }
+
+
             }
         };
 
-        mGoogleMap.addMarker(mk);
+        getDest(location2);
 
         timer.start();
 
-        if(location2.length()!= 0) {
+        getLoc(location);
+
+       /** if(location2.length()!= 0) {
 
             List<Address> list2 = gc.getFromLocationName(location2,1);
             Address address2 = list2.get(0);
@@ -210,8 +214,177 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
         } else {
             Toast.makeText(this, "Hey! Tell me where you want to go!", Toast.LENGTH_LONG).show();
+        } **/
+
+
+    }
+
+    public void getDest(String location2){
+        double lat, lon;
+
+        if(location2.equals("Eolas Building")) {
+
+            lat = 53.384656;
+            lon = -6.6601530;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Eolas Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Doing some programming?", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("John Hume Building")){
+
+            lat = 53.383891;
+            lon = -6.599503;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "John Hume Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "There's 7 Lecture Theatres in here!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Student Union")){
+
+            lat = 53.382929;
+            lon = -6.603665;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Have a pint!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Iontas Building")){
+
+            lat = 53.384716;
+            lon = -6.600174;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Iontas Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Home of the Bard!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Arts Block")){
+
+            lat = 53.383821;
+            lon = -6.601455;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Arts Block", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Theatre 1 & 2 in front of you!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("John Paul II Library")){
+
+            lat = 53.381178;
+            lon = -6.599197;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "John Paul II Library", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Great place to study!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Science Building")){
+
+            lat = 53.383008;
+            lon = -6.600329;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Science Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Don't eat anything!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Callan Building")){
+
+            lat = 53.383091;
+            lon = -6.602486;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Callan Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You can study either Biology or Computers here!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Froebel College of Education")){
+
+            lat = 53.384970;
+            lon = -6.598751;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Froebel College of Education", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Here is where you teach!", Toast.LENGTH_LONG).show();
+
         }
 
+
+    }
+
+    public void getLoc(String location2){
+        double lat, lon;
+
+        if(location2.equals("Eolas Building")) {
+
+            lat = 53.384656;
+            lon = -6.6601530;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Eolas Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("John Hume Building")){
+
+            lat = 53.383891;
+            lon = -6.599503;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "John Hume Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Student Union")){
+
+            lat = 53.382929;
+            lon = -6.603665;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Iontas Building")){
+
+            lat = 53.384716;
+            lon = -6.600174;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Iontas Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Arts Block")){
+
+            lat = 53.383821;
+            lon = -6.601455;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Arts Block", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("John Paul II Library")){
+
+            lat = 53.381178;
+            lon = -6.599197;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "John Paul II Library", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Science Building")){
+
+            lat = 53.383008;
+            lon = -6.600329;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Science Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Callan Building")){
+
+            lat = 53.383091;
+            lon = -6.602486;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Callan Building", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        } else if (location2.equals("Froebel College of Education")){
+
+            lat = 53.384970;
+            lon = -6.598751;
+            mapPlacements(lat, lon);
+            Toast.makeText(this, "Froebel College of Education", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+
+        }
+
+
+    }
+
+    public void mapPlacements(double lat, double lon){
+
+        goToLocationZoom(lat, lon, 9);
+        MarkerOptions mk = new MarkerOptions()
+                .position(new LatLng(lat, lon));
+        mGoogleMap.addMarker(mk);
 
     }
 }
