@@ -4,6 +4,9 @@ package com.example.p170086.findmylecture;
 
 /**
  * Created by gerard on 31/12/16.
+ *
+ * <p>Main map view interactions, functions and markers are
+ * done from this function</p>
  */
 import android.app.Dialog;
 import android.content.Intent;
@@ -33,9 +36,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
-// AIzaSyBZnr2lBPO0dhaIqvGBhgLAEPwlyqN-xlo
-public class MapDirections extends FragmentActivity implements OnMapReadyCallback {
 
+public class MapDirections extends FragmentActivity implements OnMapReadyCallback {
+    /**
+     * The elements declared at this point
+     * are a map object from google api, Button object, and two AutoComplete Objects
+     */
     GoogleMap mGoogleMap;
     Button go;
     AutoCompleteTextView et;
@@ -45,19 +51,23 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
+/**
+ * On Create begins with checking wheather or not
+ * a connection can be made to google maps
+ */
+        if(googleServicesAvailable()){ // if google services is connected to
 
-        if(googleServicesAvailable()){
 
-
-            Toast.makeText(this, "Perfect!", Toast.LENGTH_LONG).show();
-            setContentView(R.layout.mapresult);
-
+            Toast.makeText(this, "Perfect! We're connected!", Toast.LENGTH_LONG).show(); // flash message decalaring that the connection has been made
+            setContentView(R.layout.mapresult); // layout from R file
+            // note the array adapter which is used for the 2 declared autocomplete text views
             String[] places ={"John Hume Building","Eolas Building","Iontas Building","Student Union","Arts Block","John Paul II Library", "Science Building", "Callan Building", "Froebel College of Education"};
             ArrayAdapter<String> adapter = new ArrayAdapter<String> (this,android.R.layout.simple_list_item_1, places);
-            et = (AutoCompleteTextView)findViewById(R.id.eT);
+
+            et = (AutoCompleteTextView)findViewById(R.id.eT); // connect the AutoCompleteTextViews
             tT = (AutoCompleteTextView)findViewById(R.id.TT);
 
-
+            // set adapter and Threshold level on AutoCompleteTextViews
             et.setAdapter(adapter);
             et.setThreshold(1);
 
@@ -65,84 +75,94 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             tT.setAdapter(adapter);
             tT.setThreshold(1);
 
-
-
-
+            // initialize map object
             initMap();
 
-            //text=(AutoCompleteTextView)findViewById(R.id.autoCompleteTextView1);
-            //text1=(MultiAutoCompleteTextView)findViewById(R.id.multiAutoCompleteTextView1);
 
         } else {
+            // if error, return error page
             setContentView(R.layout.error);
         }
 
 
     }
-
+    // map function
     private void initMap() {
+        // mapfragment is linked directly to the xml map fragment
         MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
     }
-
+    //funciton checks if google services is available
     public boolean googleServicesAvailable(){
-
+        // initializes google api availibility
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int isAvailable = api.isGooglePlayServicesAvailable(this);
 
+        // if isAvailable, true is returned
         if(isAvailable == ConnectionResult.SUCCESS) {
             return true;
+        // if user resolvable, show dialog to user
         } else if (api.isUserResolvableError(isAvailable)) {
             Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
             dialog.show();
+
+        // if untraceable error
         } else {
             Toast.makeText(this, "Can't connect to google services!", Toast.LENGTH_LONG).show();
         }
         return false;
     }
 
+    // decalres map object and brings marker and zoom to maynooth
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         MarkerOptions mk = new MarkerOptions()
                   .title("Maynooth University")
-                  .position(new LatLng(53.3838854,-6.6022591));
-        goToLocationZoom(53.3838854,-6.6022591, 15);
+                  .position(new LatLng(53.382929,-6.603665));
+        goToLocationZoom(53.382929,-6.603665, 15);
+
+        //lat = 53.382929;
+        //lon = -6.603665;
 
         mGoogleMap.addMarker(mk);
 
 
     }
-
+    // creates a new camera view and goes to zoomed location
     private void goToLocationZoom(double lat, double lon, float i) {
         LatLng ll = new LatLng(lat,lon);
         CameraUpdate newView = CameraUpdateFactory.newLatLngZoom(ll, i);
         mGoogleMap.moveCamera(newView);
 
-    //    MarkerOptions mk = new MarkerOptions()
-      //          .title("Maynooth University")
-        //        .position(new LatLng(lat,lon));
-
 
     }
 
-    private void goToLocation(double lat, double lon) {
-        LatLng ll = new LatLng(lat,lon);
-        CameraUpdate newView = CameraUpdateFactory.newLatLng(ll);
-        mGoogleMap.moveCamera(newView);
-
-    }
-
-    public void geoLocate(View view) throws IOException {
-        call();
 
 
-    }
 
-    public void call()throws IOException{
+    public void geoLocate(View view)throws IOException{
 
         final String location = et.getText().toString();
         final String location2 = tT.getText().toString();
+
+        // Thread Timer  for marker placement
+        Thread timer = new Thread() {
+            public void run() {
+
+                try {
+
+                    sleep(3000);
+
+                } catch (InterruptedException e) {
+
+                    e.printStackTrace();
+
+                } finally {
+
+                }
+            }
+        };
 
         Geocoder gc = new Geocoder(this);
       //  List<Address> list = gc.getFromLocationName(location,1);
@@ -151,70 +171,22 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
         //Toast.makeText(this, locality, Toast.LENGTH_LONG).show();
 
-        double lat =  0;
-        double lon = 0;
-
-
-
-
-        goToLocationZoom(lat, lon, 17);
-
-
-
-
-        Thread timer = new Thread() {
-            public void run() {
-                /**
-                 * try to sleep() for time
-                 */
-                try {
-
-                    sleep(3000);
-                    /**
-                     * if interrupted catch exception as e
-                     */
-                } catch (InterruptedException e) {
-
-                    e.printStackTrace();
-                    /**
-                     * upon completion of trial without occurrence of e
-                     */
-                } finally {
-                    /**
-                     * @param homePage is Intent leading to Menu page
-                     */
-
-
-                }
-
-
-            }
-        };
 
         getDest(location2);
+        getLoc(location);
 
         timer.start();
 
-        getLoc(location);
 
-       /** if(location2.length()!= 0) {
 
-            List<Address> list2 = gc.getFromLocationName(location2,1);
-            Address address2 = list2.get(0);
-            String locality2 = address2.getLocality();
 
-            double lat1 =  address2.getLatitude();
-            double lon1 = address2.getLongitude();
 
-            MarkerOptions mk1 = new MarkerOptions()
-                    .title(locality2)
-                    .position(new LatLng(lat1, lon1));
+    }
 
-            mGoogleMap.addMarker(mk1);
 
-        } else {
-            Toast.makeText(this, "Hey! Tell me where you want to go!", Toast.LENGTH_LONG).show();
-        } **/
+    public void mapPlacements(double lat, double lon){
+
+        goToLocationZoom(lat, lon, 14);
 
 
     }
@@ -224,16 +196,16 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
         if(location2.equals("Eolas Building")) {
 
-            lat = 53.384656;
-            lon = -6.6601530;
+            lat = 53.384611;
+            lon = -6.601662;
             mapPlacements(lat, lon);
             Toast.makeText(this, "Eolas Building", Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Doing some programming?", Toast.LENGTH_LONG).show();
 
         } else if (location2.equals("John Hume Building")){
 
-            lat = 53.383891;
-            lon = -6.599503;
+            lat = 5;
+            lon = -6.59950;
             mapPlacements(lat, lon);
             Toast.makeText(this, "John Hume Building", Toast.LENGTH_LONG).show();
             Toast.makeText(this, "There's 7 Lecture Theatres in here!", Toast.LENGTH_LONG).show();
@@ -243,6 +215,7 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             lat = 53.382929;
             lon = -6.603665;
             mapPlacements(lat, lon);
+            makeMarker("Student Union",53.382929,-6.603665);
             Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Have a pint!", Toast.LENGTH_LONG).show();
 
@@ -323,6 +296,7 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             lat = 53.382929;
             lon = -6.603665;
             mapPlacements(lat, lon);
+            makeMarker("Student Union",53.382929,-6.603665);
             Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
 
@@ -379,12 +353,13 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
     }
 
-    public void mapPlacements(double lat, double lon){
-
-        goToLocationZoom(lat, lon, 9);
+    public void makeMarker(String x, double lat, double lon){
         MarkerOptions mk = new MarkerOptions()
-                .position(new LatLng(lat, lon));
-        mGoogleMap.addMarker(mk);
-
+                .title("Maynooth University")
+                .position(new LatLng(lat,lon));
+        goToLocationZoom(lat,lon, 15);
     }
+
+
+
 }
