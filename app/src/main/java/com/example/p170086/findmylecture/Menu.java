@@ -78,7 +78,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
              */
             case R.id.button_custom_selection:
 
-                Intent customLocationIntent = new Intent("com.example.p170086.findmylecture.CUSTOMSELECTION");
+                Intent customLocationIntent = new Intent("com.example.p170086.findmylecture.MAPRESULT");
                 startActivity(customLocationIntent);
                 break;
         }

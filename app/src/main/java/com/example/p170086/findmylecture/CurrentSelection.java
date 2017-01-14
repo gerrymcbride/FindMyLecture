@@ -1,8 +1,10 @@
 package com.example.p170086.findmylecture;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,6 +22,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,11 +56,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class CurrentSelection extends AppCompatActivity {
+/**
+ * Implements several
+ */
 
+
+public class CurrentSelection extends AppCompatActivity implements OnMapReadyCallback {
+
+    GoogleMap mGoogleMap;
     private Button b;
     private TextView t;
     private LocationManager locationManager;
@@ -63,16 +81,19 @@ public class CurrentSelection extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.currentselection);
+        if(googleServicesAvailable()) {
 
-        t = (TextView) findViewById(R.id.displayCoordinates);
-        b = (Button) findViewById(R.id.requestBtn);
+            setContentView(R.layout.currentselection);
 
-        reuqestQueue = Volley.newRequestQueue(this);
+            t = (TextView) findViewById(R.id.displayCoordinates);
+            b = (Button) findViewById(R.id.requestBtn);
+            initMap();
+            Toast.makeText(this, "We're connected!", Toast.LENGTH_LONG).show();
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            reuqestQueue = Volley.newRequestQueue(this);
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-
+        }
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -104,7 +125,34 @@ public class CurrentSelection extends AppCompatActivity {
         configure_button();
     }
 
-    @Override
+    private void initMap() {
+        // mapfragment is linked directly to the xml map fragment
+        MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.mapFragment2);
+        mapFragment.getMapAsync(this);
+    }
+
+    public boolean googleServicesAvailable(){
+        // initializes google api availibility
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int isAvailable = api.isGooglePlayServicesAvailable(this);
+
+        // if isAvailable, true is returned
+        if(isAvailable == ConnectionResult.SUCCESS) {
+            return true;
+            // if user resolvable, show dialog to user
+        } else if (api.isUserResolvableError(isAvailable)) {
+            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
+            dialog.show();
+
+            // if untraceable error
+        } else {
+            Toast.makeText(this, "Can't connect to google services!", Toast.LENGTH_LONG).show();
+        }
+        return false;
+    }
+
+
+        @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 10:
@@ -135,8 +183,12 @@ public class CurrentSelection extends AppCompatActivity {
         });
     }
 
-    public void getAddress(String lat, String lon){
+    public void getAddress(final String lat, final String lon){
+        final double lat1 = Double.parseDouble(lat);
+        final double lon1 = Double.parseDouble(lon);
+        
         JsonObjectRequest request = new JsonObjectRequest("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&key=AIzaSyC4usvTEkMSFAOiRA-Xv1fOUf_OJ8Gp268", new Response.Listener<JSONObject>() {
+
             @Override
             public void onResponse(JSONObject response) {                                                                                  // AIzaSyBaOKywPpyNvaeWiFZKi2yzdq4eCIhKi-E
 
@@ -144,11 +196,21 @@ public class CurrentSelection extends AppCompatActivity {
 
                     String address = response.getJSONArray("results").getJSONObject(0).getString("formatted_address");
                     t.setText(address);
+                    makeMarker(address, lat1, lon1);
+
 
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+
+                } finally {
+
+                    goToLocationZoom(lat1, lon1, 14);
+
+
+
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -161,4 +223,25 @@ public class CurrentSelection extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+        makeMarker("Maynooth University", 53.382929, -6.603665);
+
+    }
+
+    private void goToLocationZoom(double lat, double lon, int i) {
+        LatLng ll = new LatLng(lat,lon);
+        CameraUpdate newView = CameraUpdateFactory.newLatLngZoom(ll, i);
+        mGoogleMap.animateCamera(newView);
+    }
+
+    public void makeMarker(String x, double lat, double lon){
+        MarkerOptions mk = new MarkerOptions()
+                .title(x)
+                .position(new LatLng(lat, lon));
+        goToLocationZoom(lat, lon, 15);
+        mGoogleMap.addMarker(mk);
+
+    }
 }

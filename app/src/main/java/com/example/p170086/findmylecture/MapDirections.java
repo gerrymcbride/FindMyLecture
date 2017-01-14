@@ -116,155 +116,116 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
     // decalres map object and brings marker and zoom to maynooth
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
-        MarkerOptions mk = new MarkerOptions()
-                  .title("Maynooth University")
-                  .position(new LatLng(53.382929,-6.603665));
-        goToLocationZoom(53.382929,-6.603665, 15);
-
-        //lat = 53.382929;
-        //lon = -6.603665;
-
-        mGoogleMap.addMarker(mk);
-
+        mGoogleMap = googleMap; // declare map object
+        makeMarker("Maynooth University", "Maynooth University", "Welcome to Maynooth!", "Main Campus",53.382929,-6.603665); // place initial marker
 
     }
     // creates a new camera view and goes to zoomed location
     private void goToLocationZoom(double lat, double lon, float i) {
-        LatLng ll = new LatLng(lat,lon);
-        CameraUpdate newView = CameraUpdateFactory.newLatLngZoom(ll, i);
-        mGoogleMap.moveCamera(newView);
+        LatLng ll = new LatLng(lat,lon); // establishes new lat long elements for view
+        CameraUpdate newView = CameraUpdateFactory.newLatLngZoom(ll, i); // updates camera view with new parameters
+        mGoogleMap.animateCamera(newView); // newview is now implemented via camera move
 
 
     }
 
 
 
-
+    // geolocater function
     public void geoLocate(View view)throws IOException{
-
+        // converts entries to strings for processing
         final String location = et.getText().toString();
         final String location2 = tT.getText().toString();
+        // clears markers from map on every use
+        mGoogleMap.clear();
 
-        // Thread Timer  for marker placement
-        Thread timer = new Thread() {
-            public void run() {
-
-                try {
-
-                    sleep(3000);
-
-                } catch (InterruptedException e) {
-
-                    e.printStackTrace();
-
-                } finally {
-
-                }
-            }
-        };
-
-        Geocoder gc = new Geocoder(this);
-      //  List<Address> list = gc.getFromLocationName(location,1);
-       // Address address = list.get(0);
-        // String locality = address.getLocality();
-
-        //Toast.makeText(this, locality, Toast.LENGTH_LONG).show();
-
-
+        // gets the coordinates of both user inputs
         getDest(location2);
         getLoc(location);
 
-        timer.start();
 
 
 
 
 
     }
-
-
-    public void mapPlacements(double lat, double lon){
-
-        goToLocationZoom(lat, lon, 14);
-
-
+    // Function to place markers
+    public void makeMarker(String location, String ToastLoc, String message, String snip, double lat, double lon){
+        MarkerOptions mk = new MarkerOptions() //declare marker object
+                .title(location) //title is given as parameter
+                .position(new LatLng(lat, lon)) // new latlong declared according to parameters
+                .snippet(snip); // snippet is given as snip parameter
+        goToLocationZoom(lat, lon, 14); // goToLocationZoom() called to show location in one function
+        mGoogleMap.addMarker(mk); // marker is added to map
+        Toast.makeText(this, ToastLoc, Toast.LENGTH_LONG).show(); // info is shown according to location
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
+
+/**
+ * getDest & getLoc holds many options which would be typically stored in DB
+ * Given the limited scope of this project, DB would add abstraction
+ * which is avoidable via below
+ *
+ * Coordinates are hard-coded and retrieved via onLocationZoom
+ */
 
     public void getDest(String location2){
         double lat, lon;
 
-        if(location2.equals("Eolas Building")) {
+        if(location2.equals("Eolas Building")){
+
             lat = 53.384611;
             lon = -6.601662;
-
-            goToLocationZoom(lat, lon,9);
-            makeMarker("Eolas Building", "Eolas", "Doing some programming?", lat, lon);
+            makeMarker("Eolas Building", "Eolas", "Doing some programming?", "Department Of Computer Science", lat, lon);
 
         } else if (location2.equals("John Hume Building")){
 
-            lat = 5;
-            lon = -6.59950;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "John Hume Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "There's 7 Lecture Theatres in here!", Toast.LENGTH_LONG).show();
+            lat = 53.383891;
+            lon = -6.599503;
+            makeMarker("John Hume Building", "John Hume Buiding", "There's 7 Lecture Theatres in here!", "JH 1-7", lat, lon);
+
 
         } else if (location2.equals("Student Union")){
 
             lat = 53.382929;
             lon = -6.603665;
-            mapPlacements(lat, lon);
-            //makeMarker("Student Union",53.382929,-6.603665);
-            Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Have a pint!", Toast.LENGTH_LONG).show();
+            makeMarker("Student Union", "SU", "Have a pint!", "Bar and Student Services", lat, lon);
 
         } else if (location2.equals("Iontas Building")){
 
             lat = 53.384716;
             lon = -6.600174;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Iontas Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Home of the Bard!", Toast.LENGTH_LONG).show();
+            makeMarker("Iontas Building", "Iontas", "Home of the Bard!", "English Department", lat, lon);
 
         } else if (location2.equals("Arts Block")){
 
             lat = 53.383821;
             lon = -6.601455;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Arts Block", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Theatre 1 & 2 in front of you!", Toast.LENGTH_LONG).show();
+            makeMarker("Arts Block", "Arts Block", "Theatre 1 & 2 in front of you!", "Two Lecture Theatres", lat, lon);
 
         } else if (location2.equals("John Paul II Library")){
 
             lat = 53.381178;
             lon = -6.599197;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "John Paul II Library", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Great place to study!", Toast.LENGTH_LONG).show();
+            makeMarker("John Paul II Library", "Library", "Great place to study!", "Student Card Needed", lat, lon);
 
         } else if (location2.equals("Science Building")){
 
             lat = 53.383008;
             lon = -6.600329;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Science Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Don't eat anything!", Toast.LENGTH_LONG).show();
+            makeMarker("Science Building", "Science Building", "Don't eat anything!", "Science Department", lat, lon);
 
         } else if (location2.equals("Callan Building")){
 
             lat = 53.383091;
             lon = -6.602486;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Callan Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "You can study either Biology or Computers here!", Toast.LENGTH_LONG).show();
+            makeMarker("Callan Building", "Callan Building", "You can study either Biology or Computers here!","Computer Science and Biology", lat, lon);
 
         } else if (location2.equals("Froebel College of Education")){
 
             lat = 53.384970;
             lon = -6.598751;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Froebel College of Education", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Here is where you teach!", Toast.LENGTH_LONG).show();
+            makeMarker("Froebel College of Education", "Froebel", "Here is where you teach!", "College of Education", lat, lon);
 
         }
 
@@ -276,91 +237,62 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
         if(location2.equals("Eolas Building")) {
 
-            lat = 53.384656;
-            lon = -6.6601530;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Eolas Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            lat = 53.384611;
+            lon = -6.601662;
+            makeMarker("Eolas Building","Eolas Building","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("John Hume Building")){
 
             lat = 53.383891;
             lon = -6.599503;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "John Hume Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("John Hume Building","John Hume Building","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("Student Union")){
 
             lat = 53.382929;
             lon = -6.603665;
-            mapPlacements(lat, lon);
-           // makeMarker("Student Union",53.382929,-6.603665);
-            Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("Student Union","Student Union","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("Iontas Building")){
 
             lat = 53.384716;
             lon = -6.600174;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Iontas Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("Iontas Building","Iontas Building","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("Arts Block")){
 
             lat = 53.383821;
             lon = -6.601455;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Arts Block", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("Arts Block","Arts Block","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("John Paul II Library")){
 
             lat = 53.381178;
             lon = -6.599197;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "John Paul II Library", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("John Paul II Library","Library","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("Science Building")){
 
             lat = 53.383008;
             lon = -6.600329;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Science Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("Science Building","Science Building","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("Callan Building")){
 
             lat = 53.383091;
             lon = -6.602486;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Callan Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("Callan Building","Callan Building","Please wait","Starting Point", lat, lon);
 
         } else if (location2.equals("Froebel College of Education")){
 
             lat = 53.384970;
             lon = -6.598751;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Froebel College of Education", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
+            makeMarker("Froebel College of Education","Froebel","Please wait","Starting Point", lat, lon);
+
 
         }
 
 
     }
-
-    public void makeMarker(String location, String ToastLoc, String message, double lat, double lon){
-        MarkerOptions mk = new MarkerOptions()
-                .title(location)
-                .position(new LatLng(lat, lon));
-        mGoogleMap.addMarker(mk);
-        Toast.makeText(this, ToastLoc, Toast.LENGTH_LONG).show();
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
-
 
 }
