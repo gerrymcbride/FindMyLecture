@@ -195,12 +195,11 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
         double lat, lon;
 
         if(location2.equals("Eolas Building")) {
-
             lat = 53.384611;
             lon = -6.601662;
-            mapPlacements(lat, lon);
-            Toast.makeText(this, "Eolas Building", Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "Doing some programming?", Toast.LENGTH_LONG).show();
+
+            goToLocationZoom(lat, lon,9);
+            makeMarker("Eolas Building", "Eolas", "Doing some programming?", lat, lon);
 
         } else if (location2.equals("John Hume Building")){
 
@@ -215,7 +214,7 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             lat = 53.382929;
             lon = -6.603665;
             mapPlacements(lat, lon);
-            makeMarker("Student Union",53.382929,-6.603665);
+            //makeMarker("Student Union",53.382929,-6.603665);
             Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Have a pint!", Toast.LENGTH_LONG).show();
 
@@ -296,7 +295,7 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             lat = 53.382929;
             lon = -6.603665;
             mapPlacements(lat, lon);
-            makeMarker("Student Union",53.382929,-6.603665);
+           // makeMarker("Student Union",53.382929,-6.603665);
             Toast.makeText(this, "Student Union", Toast.LENGTH_LONG).show();
             Toast.makeText(this, "Please Wait!", Toast.LENGTH_LONG).show();
 
@@ -353,11 +352,13 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
     }
 
-    public void makeMarker(String x, double lat, double lon){
+    public void makeMarker(String location, String ToastLoc, String message, double lat, double lon){
         MarkerOptions mk = new MarkerOptions()
-                .title("Maynooth University")
-                .position(new LatLng(lat,lon));
-        goToLocationZoom(lat,lon, 15);
+                .title(location)
+                .position(new LatLng(lat, lon));
+        mGoogleMap.addMarker(mk);
+        Toast.makeText(this, ToastLoc, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
 
