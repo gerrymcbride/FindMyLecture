@@ -61,7 +61,7 @@ import android.widget.Toast;
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
- * Implements several
+ * Created by Gerard McBride on 28/11/16.
  */
 
 
@@ -101,30 +101,31 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
                 lat = Double.toString(location.getLatitude());
 
                 getAddress(lat, lon);
-                //t.append("\n " + location.getLongitude() + " " + location.getLatitude());
             }
 
-            @Override
+        @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
 
             }
-
+// not used
             @Override
             public void onProviderEnabled(String s) {
 
-            }
+            }{
 
+            }
+// not used
             @Override
             public void onProviderDisabled(String s) {
-
+                // if provider is disabled, bring to hardware settings
                 Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(i);
             }
         };
-
+        //configure button method
         configure_button();
     }
-
+    // intitali
     private void initMap() {
         // mapfragment is linked directly to the xml map fragment
         MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.mapFragment2);
@@ -153,6 +154,7 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
 
 
         @Override
+        // permission request
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 10:
@@ -184,33 +186,33 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void getAddress(final String lat, final String lon){
-        final double lat1 = Double.parseDouble(lat);
-        final double lon1 = Double.parseDouble(lon);
-        
+        final double lat1 = Double.parseDouble(lat); // parse double to lat
+        final double lon1 = Double.parseDouble(lon); // parse double to lon
+        // request json object with coordinates lat and lon acting as latitude and longtitude for the google servers
         JsonObjectRequest request = new JsonObjectRequest("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&key=AIzaSyC4usvTEkMSFAOiRA-Xv1fOUf_OJ8Gp268", new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {                                                                                  // AIzaSyBaOKywPpyNvaeWiFZKi2yzdq4eCIhKi-E
 
                 try {
-
+                    // returns and sets the address from retured json object
                     String address = response.getJSONArray("results").getJSONObject(0).getString("formatted_address");
                     t.setText(address);
-                    makeMarker(address, lat1, lon1);
+                    makeMarker(address, lat1, lon1); // sets marker on map
 
 
-
+                // if exception
                 } catch (JSONException e) {
                     e.printStackTrace();
 
                 } finally {
-
+                    // goes to marker
                     goToLocationZoom(lat1, lon1, 14);
 
 
 
                 }
-
+        // if volley returns an error
             }
         }, new Response.ErrorListener() {
             @Override
@@ -218,24 +220,24 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
 
             }
         });
-
+        // adds request to network volley queue
         reuqestQueue.add(request);
     }
 
-
+// once map is ready, goes to maynooth
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         makeMarker("Maynooth University", 53.382929, -6.603665);
 
     }
-
+    // method to change location
     private void goToLocationZoom(double lat, double lon, int i) {
-        LatLng ll = new LatLng(lat,lon);
-        CameraUpdate newView = CameraUpdateFactory.newLatLngZoom(ll, i);
-        mGoogleMap.animateCamera(newView);
+        LatLng ll = new LatLng(lat,lon); // get new lat long coordinates
+        CameraUpdate newView = CameraUpdateFactory.newLatLngZoom(ll, i); // updates camera
+        mGoogleMap.animateCamera(newView); // camera animated move
     }
-
+// method makes markers
     public void makeMarker(String x, double lat, double lon){
         MarkerOptions mk = new MarkerOptions()
                 .title(x)

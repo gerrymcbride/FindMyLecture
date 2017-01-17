@@ -39,14 +39,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CustomSelection">
-            <intent-filter>
-                <action android:name="com.example.p170086.findmylecture.CUSTOMSELECTION" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <activity android:name=".CurrentSelection">
             <intent-filter>
                 <action android:name="com.example.p170086.findmylecture.CURRENTSELECTION" />

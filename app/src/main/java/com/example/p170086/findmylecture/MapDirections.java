@@ -231,7 +231,7 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
 
     }
-
+// methods for location
     public void getLoc(String location2){
         double lat, lon;
 
