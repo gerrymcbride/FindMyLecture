@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -43,9 +44,9 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
      * are a map object from google api, Button object, and two AutoComplete Objects
      */
     GoogleMap mGoogleMap;
-    Button go;
     AutoCompleteTextView et;
     AutoCompleteTextView tT;
+
 
 
     protected void onCreate(Bundle savedInstance) {
@@ -61,7 +62,8 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Perfect! We're connected!", Toast.LENGTH_LONG).show(); // flash message decalaring that the connection has been made
             setContentView(R.layout.mapresult); // layout from R file
             // note the array adapter which is used for the 2 declared autocomplete text views
-            String[] places ={"John Hume Building","Eolas Building","Iontas Building","Student Union","Arts Block","John Paul II Library", "Science Building", "Callan Building", "Froebel College of Education"};
+            String[] places ={"John Hume Building","Eolas Building","Iontas Building","Student Union",
+                    "Logic House","Loftus Hall", "Aula Maxima","Arts Block","John Paul II Library", "Science Building", "Callan Building", "Froebel College of Education"};
             ArrayAdapter<String> adapter = new ArrayAdapter<String> (this,android.R.layout.simple_list_item_1, places);
 
             et = (AutoCompleteTextView)findViewById(R.id.eT); // connect the AutoCompleteTextViews
@@ -144,18 +146,16 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
         getLoc(location);
 
 
-
-
-
-
     }
+
     // Function to place markers
     public void makeMarker(String location, String ToastLoc, String message, String snip, double lat, double lon){
+
         MarkerOptions mk = new MarkerOptions() //declare marker object
                 .title(location) //title is given as parameter
                 .position(new LatLng(lat, lon)) // new latlong declared according to parameters
                 .snippet(snip); // snippet is given as snip parameter
-        goToLocationZoom(lat, lon, 14); // goToLocationZoom() called to show location in one function
+        goToLocationZoom(lat, lon, 15); // goToLocationZoom() called to show location in one function
         mGoogleMap.addMarker(mk); // marker is added to map
         Toast.makeText(this, ToastLoc, Toast.LENGTH_LONG).show(); // info is shown according to location
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
@@ -227,7 +227,28 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             lon = -6.598751;
             makeMarker("Froebel College of Education", "Froebel", "Here is where you teach!", "College of Education", lat, lon);
 
+        } else if (location2.equals("Logic House")){
+
+            lat = 53.377946;
+            lon = -6.596101;
+            makeMarker("Logic House","Logic House","Doing Maths?","Department of Mathematics and Statistics", lat, lon);
+
+        } else if (location2.equals("Loftus Hall")){
+
+            lat = 53.378490;
+            lon = -6.598480;
+            makeMarker("Loftus Halls","Loftus","There's alot of great architecture here!","Department of Theology", lat, lon);
+
+
+        } else if (location2.equals("Aula Maxima")){
+
+            lat = 53.380508;
+            lon = -6.597862;
+            makeMarker("Aula Maxima","Aula Maxima","Graduating or sitting an exam?", "Exam and Function Venue", lat, lon);
+
+
         }
+
 
 
     }
@@ -288,6 +309,27 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             lat = 53.384970;
             lon = -6.598751;
             makeMarker("Froebel College of Education","Froebel","Please wait","Starting Point", lat, lon);
+
+
+        } else if (location2.equals("Logic House")){
+
+            lat = 53.377946;
+            lon = -6.596101;
+            makeMarker("Logic House","Mathematics and Statistics","Please wait","Starting Point", lat, lon);
+
+
+        } else if (location2.equals("Loftus Hall")){
+
+            lat = 53.378490;
+            lon = -6.598480;
+            makeMarker("Logic House","Department of Theology","Please wait","Starting Point", lat, lon);
+
+
+        } else if (location2.equals("Aula Maxima")){
+
+            lat = 53.380508;
+            lon = -6.597862;
+            makeMarker("Aula Maxima","Exam and Function Venue","Please wait","Starting Point", lat, lon);
 
 
         }

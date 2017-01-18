@@ -63,6 +63,7 @@ public class On_Loading_Page extends AppCompatActivity {
                      */
                     Intent homePage = new Intent("com.example.p170086.findmylecture.MENU");
                     startActivity(homePage);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 }
             }
@@ -72,6 +73,7 @@ public class On_Loading_Page extends AppCompatActivity {
          * start timer thread
          */
         timer.start();
+
     }
     /**
      * onPause conatianing ahjfhdshflasdhf

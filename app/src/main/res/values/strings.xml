@@ -9,4 +9,6 @@
     <string name="custom_location"> Use Custom Location </string>
     <string name="enterlocation">Enter Location</string>
     <string name="enterdestination">Enter Destination</string>
+    <string name="requestLoc">Request Location</string>
+    <string name="getAddress">Address:</string>
 </resources>
