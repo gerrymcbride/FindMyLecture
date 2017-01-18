@@ -76,7 +76,7 @@ public class On_Loading_Page extends AppCompatActivity {
 
     }
     /**
-     * onPause conatianing ahjfhdshflasdhf
+     * onPause
      */
     protected void onPause(){
 

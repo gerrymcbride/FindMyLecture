@@ -80,22 +80,24 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+// checks if connections to google services is available
         if(googleServicesAvailable()) {
 
             setContentView(R.layout.currentselection);
-
+            // intialize buttons and text view
             t = (TextView) findViewById(R.id.displayCoordinates);
             b = (Button) findViewById(R.id.requestBtn);
-            initMap();
+            initMap(); // intialie map
             Toast.makeText(this, "We're connected!", Toast.LENGTH_LONG).show();
-
+            // create volley queue and initialize locationmanager
             reuqestQueue = Volley.newRequestQueue(this);
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         }
+        //set location lisitener
         listener = new LocationListener() {
             @Override
+            // if location changes
             public void onLocationChanged(Location location) {
                 lon = Double.toString(location.getLongitude());
                 lat = Double.toString(location.getLatitude());
@@ -125,7 +127,7 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
         //configure button method
         configure_button();
     }
-    // intitali
+    // intitalize mapfragment
     private void initMap() {
         // mapfragment is linked directly to the xml map fragment
         MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.mapFragment2);
