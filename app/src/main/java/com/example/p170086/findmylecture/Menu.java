@@ -75,7 +75,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
                 boop.start();
                 Intent currentLocationIntent = new Intent("com.example.p170086.findmylecture.CURRENTSELECTION");
                 startActivity(currentLocationIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             /**
              * case button 2

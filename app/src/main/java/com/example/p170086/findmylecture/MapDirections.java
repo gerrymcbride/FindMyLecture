@@ -246,7 +246,8 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             lon = -6.597862;
             makeMarker("Aula Maxima","Aula Maxima","Graduating or sitting an exam?", "Exam and Function Venue", lat, lon);
 
-
+        } else {
+            Toast.makeText(this, "Please enter a valid venue",Toast.LENGTH_LONG).show();
         }
 
 
@@ -332,6 +333,8 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             makeMarker("Aula Maxima","Exam and Function Venue","Please wait","Starting Point", lat, lon);
 
 
+        } else {
+            Toast.makeText(this, "Please enter a valid venue",Toast.LENGTH_LONG).show();
         }
 
 
