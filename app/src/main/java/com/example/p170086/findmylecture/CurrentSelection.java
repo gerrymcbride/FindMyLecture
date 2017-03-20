@@ -113,9 +113,8 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onProviderEnabled(String s) {
 
-            }{
-
             }
+
 // not used
             @Override
             public void onProviderDisabled(String s) {
@@ -200,7 +199,7 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
                     // returns and sets the address from retured json object
                     String address = response.getJSONArray("results").getJSONObject(0).getString("formatted_address");
                     t.setText(address);
-                    makeMarker(address, lat1, lon1); // sets marker on map
+                    makeMarker(address, lat1, lon1, "You are here!"); // sets marker on map
 
 
                 // if exception
@@ -230,7 +229,7 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        makeMarker("Maynooth University", 53.382929, -6.603665);
+        makeMarker("Maynooth University", 53.382929, -6.603665, null);
 
     }
     // method to change location
@@ -240,10 +239,12 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
         mGoogleMap.animateCamera(newView); // camera animated move
     }
 // method makes markers
-    public void makeMarker(String x, double lat, double lon){
+    public void makeMarker(String x, double lat, double lon, String snip){
         MarkerOptions mk = new MarkerOptions()
                 .title(x)
-                .position(new LatLng(lat, lon));
+                .position(new LatLng(lat, lon))
+                .snippet(snip);
+
         goToLocationZoom(lat, lon, 15);
         mGoogleMap.addMarker(mk);
 

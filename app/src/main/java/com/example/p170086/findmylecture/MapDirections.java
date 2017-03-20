@@ -9,33 +9,28 @@ package com.example.p170086.findmylecture;
  * done from this function</p>
  */
 import android.app.Dialog;
-import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.media.MediaPlayer;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-
 import android.support.v4.app.FragmentActivity;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.io.IOException;
-import java.util.List;
 
 
 public class MapDirections extends FragmentActivity implements OnMapReadyCallback {
@@ -45,12 +40,18 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
      */
     GoogleMap mGoogleMap;
     AutoCompleteTextView et;
-    AutoCompleteTextView tT;
+    MaynoothDB s;
 
 
 
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
+        s = new MaynoothDB(MapDirections.this);
+        s.open();
+        s.populateMaynoothTable();
+
+
 
 /**
  * On Create begins with checking wheather or not
@@ -59,7 +60,8 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
         if(googleServicesAvailable()){ // if google services is connected to
 
 
-            Toast.makeText(this, "Perfect! We're connected!", Toast.LENGTH_LONG).show(); // flash message decalaring that the connection has been made
+
+            Toast.makeText(this, "Perfect! We're connected!", Toast.LENGTH_LONG).show();// flash message decalaring that the connection has been made
             setContentView(R.layout.mapresult); // layout from R file
             // note the array adapter which is used for the 2 declared autocomplete text views
             String[] places ={"John Hume Building","Eolas Building","Iontas Building","Student Union",
@@ -67,15 +69,11 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
             ArrayAdapter<String> adapter = new ArrayAdapter<String> (this,android.R.layout.simple_list_item_1, places);
 
             et = (AutoCompleteTextView)findViewById(R.id.eT); // connect the AutoCompleteTextViews
-            tT = (AutoCompleteTextView)findViewById(R.id.TT);
 
             // set adapter and Threshold level on AutoCompleteTextViews
             et.setAdapter(adapter);
             et.setThreshold(1);
 
-
-            tT.setAdapter(adapter);
-            tT.setThreshold(1);
 
             // initialize map object
             initMap();
@@ -88,6 +86,14 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
 
 
     }
+
+
+
+    @Override
+    public View findViewById(int id) {
+        return super.findViewById(id);
+    }
+
     // map function
     private void initMap() {
         // mapfragment is linked directly to the xml map fragment
@@ -119,7 +125,9 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap; // declare map object
+        mGoogleMap.setMapType(mGoogleMap.MAP_TYPE_HYBRID);
         makeMarker("Maynooth University", "Maynooth University", "Welcome to Maynooth!", "Main Campus",53.382929,-6.603665); // place initial marker
+        mGoogleMap.clear();
 
     }
     // creates a new camera view and goes to zoomed location
@@ -137,13 +145,12 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
     public void geoLocate(View view)throws IOException{
         // converts entries to strings for processing
         final String location = et.getText().toString();
-        final String location2 = tT.getText().toString();
         // clears markers from map on every use
         mGoogleMap.clear();
 
         // gets the coordinates of both user inputs
-        getDest(location2);
-        getLoc(location);
+        getDest(location);
+
 
 
     }
@@ -151,11 +158,18 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
     // Function to place markers
     public void makeMarker(String location, String ToastLoc, String message, String snip, double lat, double lon){
 
+
+
         MarkerOptions mk = new MarkerOptions() //declare marker object
                 .title(location) //title is given as parameter
                 .position(new LatLng(lat, lon)) // new latlong declared according to parameters
                 .snippet(snip); // snippet is given as snip parameter
-        goToLocationZoom(lat, lon, 15); // goToLocationZoom() called to show location in one function
+                mk.icon(BitmapDescriptorFactory.fromResource(R.mipmap.university));
+        goToLocationZoom(lat, lon, 15);// goToLocationZoom() called to show location in one function
+
+        setMapInfoWindow("Hello", "Terrific", "Magical", false);
+        setMapInfoWindow("Hlo", "Terc", "ical", true);
+
         mGoogleMap.addMarker(mk); // marker is added to map
         Toast.makeText(this, ToastLoc, Toast.LENGTH_LONG).show(); // info is shown according to location
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
@@ -169,175 +183,67 @@ public class MapDirections extends FragmentActivity implements OnMapReadyCallbac
  * Coordinates are hard-coded and retrieved via onLocationZoom
  */
 
-    public void getDest(String location2){
-        double lat, lon;
+    public String[] returnSQLData(MaynoothDB s, String location){
 
-        if(location2.equals("Eolas Building")){
+        String hey = s.getData(location);
+        String[] newhey = hey.split("/");
+        return newhey;
 
-            lat = 53.384611;
-            lon = -6.601662;
-            makeMarker("Eolas Building", "Eolas", "Doing some programming?", "Department Of Computer Science", lat, lon);
+    }
 
-        } else if (location2.equals("John Hume Building")){
+    public void getDest(String location){
 
-            lat = 53.383891;
-            lon = -6.599503;
-            makeMarker("John Hume Building", "John Hume Buiding", "There's 7 Lecture Theatres in here!", "JH 1-7", lat, lon);
+        String[] dataResponse = returnSQLData(s,location);
 
+        double latitude = Double.valueOf(dataResponse[1]);
+        double longitude = Double.valueOf(dataResponse[2]);
 
-        } else if (location2.equals("Student Union")){
+        makeMarker(location, dataResponse[0], dataResponse[0], dataResponse[0], longitude, latitude);
+        setMapInfoWindow(dataResponse[0], dataResponse[0],dataResponse[0], true);
 
-            lat = 53.382929;
-            lon = -6.603665;
-            makeMarker("Student Union", "SU", "Have a pint!", "Bar and Student Services", lat, lon);
-
-        } else if (location2.equals("Iontas Building")){
-
-            lat = 53.384716;
-            lon = -6.600174;
-            makeMarker("Iontas Building", "Iontas", "Home of the Bard!", "English Department", lat, lon);
-
-        } else if (location2.equals("Arts Block")){
-
-            lat = 53.383821;
-            lon = -6.601455;
-            makeMarker("Arts Block", "Arts Block", "Theatre 1 & 2 in front of you!", "Two Lecture Theatres", lat, lon);
-
-        } else if (location2.equals("John Paul II Library")){
-
-            lat = 53.381178;
-            lon = -6.599197;
-            makeMarker("John Paul II Library", "Library", "Great place to study!", "Student Card Needed", lat, lon);
-
-        } else if (location2.equals("Science Building")){
-
-            lat = 53.383008;
-            lon = -6.600329;
-            makeMarker("Science Building", "Science Building", "Don't eat anything!", "Science Department", lat, lon);
-
-        } else if (location2.equals("Callan Building")){
-
-            lat = 53.383091;
-            lon = -6.602486;
-            makeMarker("Callan Building", "Callan Building", "You can study either Biology or Computers here!","Computer Science and Biology", lat, lon);
-
-        } else if (location2.equals("Froebel College of Education")){
-
-            lat = 53.384970;
-            lon = -6.598751;
-            makeMarker("Froebel College of Education", "Froebel", "Here is where you teach!", "College of Education", lat, lon);
-
-        } else if (location2.equals("Logic House")){
-
-            lat = 53.377946;
-            lon = -6.596101;
-            makeMarker("Logic House","Logic House","Doing Maths?","Department of Mathematics and Statistics", lat, lon);
-
-        } else if (location2.equals("Loftus Hall")){
-
-            lat = 53.378490;
-            lon = -6.598480;
-            makeMarker("Loftus Halls","Loftus","There's alot of great architecture here!","Department of Theology", lat, lon);
-
-
-        } else if (location2.equals("Aula Maxima")){
-
-            lat = 53.380508;
-            lon = -6.597862;
-            makeMarker("Aula Maxima","Aula Maxima","Graduating or sitting an exam?", "Exam and Function Venue", lat, lon);
-
-        } else {
-            Toast.makeText(this, "Please enter a valid venue",Toast.LENGTH_LONG).show();
-        }
 
 
 
     }
-// methods for location
-    public void getLoc(String location2){
-        double lat, lon;
-
-        if(location2.equals("Eolas Building")) {
-
-            lat = 53.384611;
-            lon = -6.601662;
-            makeMarker("Eolas Building","Eolas Building","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("John Hume Building")){
-
-            lat = 53.383891;
-            lon = -6.599503;
-            makeMarker("John Hume Building","John Hume Building","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("Student Union")){
-
-            lat = 53.382929;
-            lon = -6.603665;
-            makeMarker("Student Union","Student Union","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("Iontas Building")){
-
-            lat = 53.384716;
-            lon = -6.600174;
-            makeMarker("Iontas Building","Iontas Building","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("Arts Block")){
-
-            lat = 53.383821;
-            lon = -6.601455;
-            makeMarker("Arts Block","Arts Block","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("John Paul II Library")){
-
-            lat = 53.381178;
-            lon = -6.599197;
-            makeMarker("John Paul II Library","Library","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("Science Building")){
-
-            lat = 53.383008;
-            lon = -6.600329;
-            makeMarker("Science Building","Science Building","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("Callan Building")){
-
-            lat = 53.383091;
-            lon = -6.602486;
-            makeMarker("Callan Building","Callan Building","Please wait","Starting Point", lat, lon);
-
-        } else if (location2.equals("Froebel College of Education")){
-
-            lat = 53.384970;
-            lon = -6.598751;
-            makeMarker("Froebel College of Education","Froebel","Please wait","Starting Point", lat, lon);
 
 
-        } else if (location2.equals("Logic House")){
+    public void setMapInfoWindow(String building, String venues, String information, boolean windowOne){
 
-            lat = 53.377946;
-            lon = -6.596101;
-            makeMarker("Logic House","Mathematics and Statistics","Please wait","Starting Point", lat, lon);
+        final String buildingText = building;
+        final String venuesText = venues;
+        final String informationText = information;
+        final boolean isWindowOne = windowOne;
+        mGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
 
+            @Override
+            public View getInfoContents(Marker marker) {
+                View v = getLayoutInflater().inflate(R.layout.infowindow2, null);
 
-        } else if (location2.equals("Loftus Hall")){
+                if(isWindowOne) {
 
-            lat = 53.378490;
-            lon = -6.598480;
-            makeMarker("Logic House","Department of Theology","Please wait","Starting Point", lat, lon);
+                    v = getLayoutInflater().inflate(R.layout.infowindow, null);
 
+                }
 
-        } else if (location2.equals("Aula Maxima")){
+                TextView tvloc = (TextView) v.findViewById(R.id.tv_locality);
+                TextView tvlat = (TextView) v.findViewById(R.id.tv_lat);
+                TextView tvlat2 = (TextView) v.findViewById(R.id.tv_lng);
+                String p = "poop";
+                tvloc.setText(buildingText);
+                tvloc.setTextColor(Color.BLACK);
+                tvlat.setText(venuesText);
+                tvlat.setTextColor(Color.BLACK);
+                tvlat2.setText("Classrooms: " + informationText);
+                tvlat2.setTextColor(Color.BLACK);
 
-            lat = 53.380508;
-            lon = -6.597862;
-            makeMarker("Aula Maxima","Exam and Function Venue","Please wait","Starting Point", lat, lon);
-
-
-        } else {
-            Toast.makeText(this, "Please enter a valid venue",Toast.LENGTH_LONG).show();
-        }
-
-
+                return v;
+            }
+        });
     }
+
 
 }
