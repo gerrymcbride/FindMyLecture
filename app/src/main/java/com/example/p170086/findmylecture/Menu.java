@@ -87,9 +87,6 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
-            case R.id.exitButton:
-                finish();
-                System.exit(0);
         }
     }
 

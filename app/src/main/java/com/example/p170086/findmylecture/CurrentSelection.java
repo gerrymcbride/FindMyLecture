@@ -87,7 +87,7 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
             // intialize buttons and text view
             t = (TextView) findViewById(R.id.displayCoordinates);
             b = (Button) findViewById(R.id.requestBtn);
-            initMap(); // intialie map
+            initMap(); // intialize map
             Toast.makeText(this, "We're connected!", Toast.LENGTH_LONG).show();
             // create volley queue and initialize locationmanager
             reuqestQueue = Volley.newRequestQueue(this);
@@ -171,8 +171,8 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
-                        , 10);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET} , 10);
             }
             return;
         }
@@ -190,7 +190,8 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
         final double lat1 = Double.parseDouble(lat); // parse double to lat
         final double lon1 = Double.parseDouble(lon); // parse double to lon
         // request json object with coordinates lat and lon acting as latitude and longtitude for the google servers
-        JsonObjectRequest request = new JsonObjectRequest("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+"&key=AIzaSyC4usvTEkMSFAOiRA-Xv1fOUf_OJ8Gp268", new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lon+
+                "&key=AIzaSyC4usvTEkMSFAOiRA-Xv1fOUf_OJ8Gp268", new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {                                                                                  // AIzaSyBaOKywPpyNvaeWiFZKi2yzdq4eCIhKi-E
@@ -210,8 +211,6 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
                     // goes to marker
                     goToLocationZoom(lat1, lon1, 14);
 
-
-
                 }
         // if volley returns an error
             }
@@ -229,6 +228,7 @@ public class CurrentSelection extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+        mGoogleMap.setMapType(mGoogleMap.MAP_TYPE_HYBRID);
         makeMarker("Maynooth University", 53.382929, -6.603665, null);
 
     }
